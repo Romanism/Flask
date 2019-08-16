@@ -15,6 +15,9 @@ class CustomJSONEncoder(JSONEncoder):
 
 
 def get_user(user_id):
+    """
+    생성한 사용자의 정보를 DataBase에서 읽어 들임
+    """
     user = current_app.database.execute(text("""
         SELECT
             id,
@@ -36,6 +39,11 @@ def get_user(user_id):
 
 
 def insert_user(user):
+    """
+    - 사용자 정보를 DataBase에 입력하는 함수
+    - 만일 필드 이름이 틀리거나 필드가 부재인 경우 오류가 발생
+    - 새로 사용자가 생성되면 새로 생성된 사용자의 id를 lastrowid를 통해 읽어 들임
+    """
     return current_app.database.execute(text("""
         INSERT INTO users (
             name,
@@ -52,6 +60,9 @@ def insert_user(user):
 
 
 def insert_tweet(user_tweet):
+    """
+    작성한 트윗을 DataBase에 입력하는 함수
+    """
     return current_app.database.execute(text("""
         INSERT INTO tweets (
             user_id,
@@ -64,6 +75,9 @@ def insert_tweet(user_tweet):
 
 
 def insert_follow(user_follow):
+    """
+    팔로우한 사용자를 DataBase에 입력하는 함수
+    """
     return current_app.database.execute(text("""
         INSERT INTO users_follow_list (
             user_id,
@@ -76,6 +90,9 @@ def insert_follow(user_follow):
 
 
 def insert_unfollow(user_unfollow):
+    """
+    언팔로우한 사용자를 DataBase에 입력하는 함수
+    """
     return current_app.database.execute(text("""
         DELETE FROM users_follow_list
         WHERE user_id = :id
@@ -84,6 +101,9 @@ def insert_unfollow(user_unfollow):
 
 
 def get_timeline(user_id):
+    """
+    타임라인을 읽어들이는 함수
+    """
     timeline = current_app.database.execute(text("""
         SELECT
             t.user_id,
@@ -103,6 +123,11 @@ def get_timeline(user_id):
 
 
 def create_app(test_config = None):
+    """
+    - Flask가 create_app이라는 이름의 함수를 자동으로 팩토리 함수로 인식해서 해당 함수를 통해서 Flask 실행
+    - create_app 함수가 test_config라는 인자를 받는 단위 테스트를 실행시킬 때 테스트용 데이터베이스 등의 테스트 설정 정보를 적용하기 위함
+    """
+
     app = Flask(__name__)
 
     app.json_encoder = CustomJSONEncoder
@@ -112,8 +137,8 @@ def create_app(test_config = None):
     else:
         app.config.update(test_config)
 
-    database = create_engine(app.config["DB_URL"], encoding = "utf-8", max_overflow = 0)
-    app.database = database
+    database = create_engine(app.config["DB_URL"], encoding = "utf-8", max_overflow = 0) # sqlalchemy의 create_engine 함수를 사용해 데이터베이스와 연결
+    app.database = database # 위에서 발생한 engine 객체를 Flask 객체에 저장함으로써 create_app함수 외부에서도 데이터베이스를 사용할 수 있게 함
 
 
     @app.route("/sign-up", methods=["POST"])
@@ -154,7 +179,7 @@ def create_app(test_config = None):
         return "success", 200
 
     
-    @app.rounte("/timeline/<int:user_id>", methods=["GET"])
+    @app.route("/timeline/<int:user_id>", methods=["GET"])
     def timeline(user_id):
         return jsonify({
             "user_id" : user_id,

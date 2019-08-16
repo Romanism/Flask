@@ -132,4 +132,4 @@ def timeline(user_id):
     }) # 사용자 아이디와 함께 타임라인을 JSON형태로 리턴
 
 
-# FLASK_APP=minitor.py FLASK_DEBUG=1 flask run 로 실행
+# FLASK_APP=miniter.py FLASK_DEBUG=1 flask run 로 실행
