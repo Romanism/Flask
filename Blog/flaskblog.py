@@ -1,6 +1,9 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, url_for
+from forms import RegistrationForm, LoginForm
 
 app = Flask(__name__)
+
+app.config["SECRET_KEY"] = "INTELLECTUAL_BLOG_KEY"
 
 posts = [
     {
@@ -31,4 +34,16 @@ def about():
     """
     about.html에 title을 건네줌
     """
-    return render_template("about.html", title="about")
+    return render_template("about.html", title="About")
+
+
+@app.route('/register')
+def register():
+    form = RegistrationForm()
+    return render_template("register.html", title="Register", form=form)
+
+
+@app.route('/login')
+def login():
+    form = LoginForm()
+    return render_template("login.html", title="Login", form=form)
