@@ -1,0 +1,19 @@
+<!-- 
+layout.html을 가져옴 
+content라는 block에 h1 내용을 입력하겠다는 의미
+-->
+
+{% extends "layout.html" %} {% block content %} {% for post in posts %}
+<article class="media content-section">
+  <div class="media-body">
+    <div class="article-metadata">
+      <a class="mr-2" href="#">{{ post.author }}</a>
+      <small class="text-muted">{{ post.date_posted }}</small>
+    </div>
+    <h2>
+      <a class="article-title" href="#">{{ post.title }}</a>
+    </h2>
+    <p class="article-content">{{ post.content }}</p>
+  </div>
+</article>
+{% endfor %} {% endblock content %}
